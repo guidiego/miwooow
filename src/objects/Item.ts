@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import EnhancedScene from "../core/EnhancedScene";
 import Cursor from "./Cursor";
 
-const IconKeys = {
+const ItemKeys = {
   COLLAR: 0,
   PICKAXE: 1,
   RUBY: 2,
@@ -41,24 +41,28 @@ const IconKeys = {
   TORCH: 35
 };
 
-interface IconOpts {
+interface ItemOpts {
   x?: number,
   y?: number,
   scale?: number,
   cursorType?: number,
   autoInsert?: boolean;
+  kind?: 'loot' | 'inv';
 }
 
-class Icon extends Phaser.GameObjects.Sprite {
-  static KEYS = IconKeys;
+class Item extends Phaser.GameObjects.Sprite {
+  static KEYS = ItemKeys;
+  waitingForCollect: boolean = false;
   scene: EnhancedScene;
+  key: number;
 
   constructor(
     scene: EnhancedScene,
     itemFrame: number,
-    opts: IconOpts = { x: 0, y: 0, scale: 1, autoInsert: false, cursorType: 0},
+    opts: ItemOpts = { x: 0, y: 0, scale: 1, autoInsert: false, cursorType: 0, kind: 'loot' },
   ) {
-    super(scene, opts.x, opts.y , 'icon', itemFrame);
+    super(scene, opts.x, opts.y , 'itens', itemFrame);
+    this.key = itemFrame;
     this.setInteractive();
     this.setScale(opts.scale);
     if (opts.autoInsert) {
@@ -66,17 +70,27 @@ class Icon extends Phaser.GameObjects.Sprite {
     }
 
     this.on('pointerover', () => {
-      this.scene.cursor.setFrame(
-        Cursor.KEYS.LOOT
-      )
+      if (opts.kind === 'loot') {
+        this.scene.cursor.setFrame(
+          Cursor.KEYS.LOOT
+        )
+      }
     });
 
     this.on('pointerout', () => {
-      this.scene.cursor.setFrame(
-        Cursor.KEYS.DEFAULT
-      )
-    })
+      if (opts.kind === 'loot') {
+        this.scene.cursor.setFrame(
+          Cursor.KEYS.DEFAULT
+        );
+      }
+    });
+
+    this.on('pointerdown', () => {
+      if (opts.kind === 'loot') {
+        this.waitingForCollect = true;
+      }
+    });
   }
 }
 
-export default Icon;
+export default Item;

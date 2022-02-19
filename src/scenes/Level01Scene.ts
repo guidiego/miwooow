@@ -7,11 +7,11 @@ class Level01Scene extends EnhancedScene {
 
   create() {
     super.create();
-    const item = new Item(this, Item.KEYS.BAG, {
-      x: 300,
-      y: 300,
-      autoInsert: true,
-    });
+    this.addLoot(Item.KEYS.COLLAR, 300, 300);
+    this.addLoot(Item.KEYS.COLLAR, 600, 300);
+    this.addLoot(Item.KEYS.COLLAR, 200, 200);
+    this.addLoot(Item.KEYS.COLLAR, 700, 700);
+    this.addLoot(Item.KEYS.COLLAR, 800, 800);
   }
 }
 
