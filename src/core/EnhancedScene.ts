@@ -16,9 +16,9 @@ class EnhancedScene extends Phaser.Scene {
       frameHeight: 64,
     });
 
-    this.load.spritesheet('itens', 'sprites/icons.png', {
-      frameWidth: 30,
-      frameHeight: 30,
+    this.load.spritesheet('itens', 'sprites/itens.png', {
+      frameWidth: 32,
+      frameHeight: 32,
     });
 
     this.load.spritesheet('cursors', 'sprites/cursors.png', {
