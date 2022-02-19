@@ -28,8 +28,14 @@ class Inventory extends Phaser.GameObjects.Container {
     return r;
   }
 
-  addItem(item: number) {
+  addItem(item: number): boolean {
     const freeSlot = this._items.indexOf(-1);
+
+    if (freeSlot === -1) {
+      alert('Invetory Full');
+      return false;
+    }
+
     this._items[freeSlot] = item;
     this.add(
       new Item(this.scene, item, {
@@ -39,6 +45,8 @@ class Inventory extends Phaser.GameObjects.Container {
         kind: 'inv',
       })
     );
+
+    return true;
   }
 }
 

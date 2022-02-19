@@ -50,10 +50,11 @@ class EnhancedScene extends Phaser.Scene {
         (this.player.x - 50 <= item.x && item.x <= this.player.x + 50) &&
         (this.player.y - 50 <= item.y && item.y <= this.player.y + 50)
       ) {
-        this.inventory.addItem(item.key);
         this.cursor.setFrame(Cursor.KEYS.DEFAULT);
         item.waitingForCollect = false;
-        item.destroy();
+        if (this.inventory.addItem(item.key)) {
+          item.destroy();
+        }
       }
     });
   }
