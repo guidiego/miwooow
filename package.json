@@ -19,6 +19,7 @@
     "phaser": "^3.55.2",
     "webpack": "^5.69.0",
     "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.7.4"
+    "webpack-dev-server": "^4.7.4",
+    "xstate": "^4.30.1"
   }
 }

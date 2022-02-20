@@ -3,12 +3,16 @@ import Cursor from "../objects/Cursor";
 import Inventory from "../objects/Inventory";
 import Player from "../objects/Player";
 import Item from "../objects/Item";
+import HUD from "./hud";
+import SharedStateMachine from "../states/shared";
 
 class EnhancedScene extends Phaser.Scene {
   player: Player;
   cursor: Cursor;
   inventory: Inventory;
   loot: Item[] = [];
+  hud: HUD;
+  sharedState: ReturnType<typeof SharedStateMachine>;
 
   preload() {
     this.load.spritesheet('player', 'sprites/player.png', {
@@ -39,11 +43,15 @@ class EnhancedScene extends Phaser.Scene {
     });
 
     this.inventory = new Inventory(this);
+    this.hud = new HUD(this);
+    this.sharedState = SharedStateMachine();
   }
 
-  update() {
-    this.player.update();
+  update(time, delta) {
+    this.sharedState.setTimer(time);
+    this.player.update(delta);
     this.cursor.update();
+    this.hud.update();
     this.loot.forEach((item) => {
       if (
         item.waitingForCollect &&
