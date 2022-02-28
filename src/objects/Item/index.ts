@@ -1,47 +1,8 @@
 import Phaser from "phaser";
-import EnhancedScene from "../core/EnhancedScene";
-import Cursor from "./Cursor";
+import EnhancedScene from "../../core/EnhancedScene";
+import Cursor from "../Cursor";
 
-const ItemKeys = {
-  BAG: 0,
-  COLLAR: 1,
-  POTION_BLUE: 2,
-  BOOK_1: 3,
-  BOOK_2: 4,
-  BOOK_3: 5,
-  WOOD_PLANK: 6,
-  CHEESE: 7,
-  COIN_COPPER: 8,
-  CRYSTAL: 9,
-  EMERALD: 10,
-  EMPTY_BOTTLE: 11,
-  FABRIC: 12,
-  WOOL: 13,
-  FISH: 14,
-  GEAR: 15,
-  COIN_GOLD: 16,
-  KEY_GOLD: 17,
-  POTION_GREEN: 18,
-  HAMMER: 19,
-  HEART: 21,
-  KEY_OLD: 22,
-  MAP: 23,
-  EYE: 24,
-  PICKAXE: 25,
-  POTION_RED: 26,
-  ROPE: 28,
-  RUBY: 29,
-  RUNE: 30,
-  SAPPHIRE: 31,
-  SCROLL: 32,
-  COIN_SILVER: 33,
-  KEY_SILVER: 35,
-  STRING: 36,
-  TOPAZ: 37,
-  TORCH: 38,
-  BOTTLE_EMPTY: 39,
-  WOOD: 40
-};
+import * as InfoItem from "./info";
 
 interface ItemOpts {
   x?: number,
@@ -52,26 +13,31 @@ interface ItemOpts {
   kind?: 'loot' | 'inv';
 }
 
+export type AvailableItemNames = keyof typeof InfoItem;
+
 class Item extends Phaser.GameObjects.Sprite {
-  static KEYS = ItemKeys;
+  private _key: AvailableItemNames;
+  private _tooltip: Phaser.GameObjects.Container;
+
   waitingForCollect: boolean = false;
   scene: EnhancedScene;
-  key: number;
 
   constructor(
     scene: EnhancedScene,
-    itemFrame: number,
+    itemName: AvailableItemNames,
     opts: ItemOpts = { x: 0, y: 0, scale: 1, autoInsert: false, cursorType: 0, kind: 'loot' },
   ) {
-    super(scene, opts.x, opts.y , 'itens', itemFrame);
-    this.key = itemFrame;
+    super(scene, opts.x, opts.y , 'itens', InfoItem[itemName].frame);
+    this._key = itemName;
     this.setInteractive();
     this.setScale(opts.scale);
     if (opts.autoInsert) {
       scene.add.existing(this);
     }
 
-    this.on('pointerover', () => {
+    this.on('pointerover', (e) => {
+      this.createTooltip();
+
       if (opts.kind === 'loot') {
         this.scene.cursor.setFrame(
           Cursor.KEYS.LOOT
@@ -80,6 +46,8 @@ class Item extends Phaser.GameObjects.Sprite {
     });
 
     this.on('pointerout', () => {
+      this.scene.cursor.destroyTooltip();
+
       if (opts.kind === 'loot') {
         this.scene.cursor.setFrame(
           Cursor.KEYS.DEFAULT
@@ -88,10 +56,23 @@ class Item extends Phaser.GameObjects.Sprite {
     });
 
     this.on('pointerdown', () => {
+      this.scene.cursor.destroyTooltip();
+
       if (opts.kind === 'loot') {
         this.waitingForCollect = true;
       }
     });
+  }
+
+  get key() {
+    return this._key;
+  }
+
+  createTooltip() {
+    const item = InfoItem[this._key];
+    const text = new Phaser.GameObjects.Text(this.scene, 0, 0, item.name, {});
+
+    this.scene.cursor.createTooltip(text);
   }
 }
 

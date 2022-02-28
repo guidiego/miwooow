@@ -1,20 +1,39 @@
 import Phaser from "phaser";
-import Item from "../../objects/Item";
+import EnhancedScene from "../EnhancedScene";
+
+import { HeartIcon } from "../../objects/Icon";
 
 class LifeBar extends Phaser.GameObjects.Container {
+  private hearts: Phaser.GameObjects.Sprite[] = [];
+  scene: EnhancedScene;
+
   constructor(scene) {
-    super(scene, 0, 0);
+    super(scene, 20, 10);
     for (let i = 0; i < 7; i++) {
-      const heart = new Phaser.GameObjects.Sprite(
+      const heart = new HeartIcon(
         scene,
         i * 40,
-        0,
-        'itens',
-        Item.KEYS.HEART
-      ).setOrigin(0);
-      this.add(
-        heart
+        0
       )
+
+      this.hearts.push(heart);
+      this.add(heart);
+    }
+  }
+
+  update() {
+    const lastHeart = this.hearts[this.hearts.length - 1];
+    const integrity = this.scene.sharedState.getLifeIntegrity();
+
+    if (this.hearts.length > 0 && this.scene.sharedState.getLife() < this.hearts.length) {
+      lastHeart.destroy();
+      this.hearts.pop();
+    }
+
+    if (integrity < 1) {
+      const integrityOffSet = integrity + 0.5;
+      integrityOffSet < 1 && lastHeart.setScale(integrityOffSet);
+      lastHeart.setAlpha(integrity);
     }
   }
 };

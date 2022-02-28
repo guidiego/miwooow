@@ -1,34 +1,22 @@
 import Phaser from "phaser";
 import EnhancedScene from "../core/EnhancedScene";
+import { SharedState } from "../states/shared";
 
 class Player extends Phaser.GameObjects.Sprite {
   private _followMark;
   private _followMarkCooldown = 100;
   private _nextFollowMarkTime = 0;
   private _speed = 0.3;
-  private _life = 7;
-  private _foodFactor = 1;
-  private _tiredFactor = 1;
 
   scene: EnhancedScene;
+  sharedState: SharedState;
 
   constructor(scene, x, y) {
     super(scene, x, y, 'player', 0);
     this.setOrigin(0.5, 0.5);
     this.setScale(2);
     this.scene.add.existing(this);
-  }
-
-  get discountLevels() {
-    return {
-      hungry: ((7 / this._foodFactor) / this._life) * -1,
-      thirst: ((7 / this._foodFactor) / this._life) * -1,
-      tiredness: ((7 / this._tiredFactor) / this._life) * -1,
-    }
-  }
-
-  get lifes() {
-    return this._life;
+    this.sharedState = this.scene.sharedState;
   }
 
   get pointer() {
@@ -71,9 +59,7 @@ class Player extends Phaser.GameObjects.Sprite {
       return;
     }
 
-    this.scene.sharedState.levels.hungry.increaseIn(this.discountLevels.hungry);
-    this.scene.sharedState.levels.thirst.increaseIn(this.discountLevels.thirst);
-    this.scene.sharedState.levels.tiredness.increaseIn(this.discountLevels.tiredness);
+    this.scene.sharedState.walk();
 
     if (this.x !== this._followMark.x) {
       const dist = this.x - this._followMark.x;
@@ -96,6 +82,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.setFrame(0);
     }
   }
+
 
   update(delta) {
     this.captureFollowMark();

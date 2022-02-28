@@ -5,6 +5,7 @@ import Level01Scene from './scenes/Level01Scene';
 const game = new Phaser.Game({
   width: innerWidth,
   height: innerHeight,
+  backgroundColor: 0x333333,
   fps: {
     min: 30,
   }
