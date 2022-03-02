@@ -1,8 +1,11 @@
 import Phaser from "phaser";
-import Cursor from "../objects/Cursor";
-import Inventory from "../objects/Inventory";
-import Player from "../objects/Player";
+
 import HUD from "./hud";
+import Cursor from "./Cursor";
+import Player from "./Player";
+import Inventory from "./Inventory";
+import MiniMap from "./MiniMap";
+
 import Item, { AvailableItemNames } from "../objects/Item";
 import SharedStateMachine, { SharedState } from "../states/shared";
 
@@ -12,6 +15,7 @@ class EnhancedScene extends Phaser.Scene {
   inventory: Inventory;
   loot: Item[] = [];
   hud: HUD;
+  minimap: MiniMap;
   sharedState: SharedState;
 
   preload() {
@@ -33,8 +37,10 @@ class EnhancedScene extends Phaser.Scene {
   }
 
   create() {
+    this.sharedState = SharedStateMachine();
     this.input.setDefaultCursor('none');
     this.hud = new HUD(this);
+    this.minimap = new MiniMap(this);
 
     this.player = new Player(this, innerWidth /2, innerHeight / 2);
     this.cursor = new Cursor(this, Cursor.KEYS.DEFAULT, {
@@ -44,7 +50,6 @@ class EnhancedScene extends Phaser.Scene {
     });
 
     this.inventory = new Inventory(this);
-    this.sharedState = SharedStateMachine();
   }
 
   update(time, delta) {

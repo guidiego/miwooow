@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { borderGenerator } from "../util/hud";
 
 const CursorKeys = {
   DEFAULT: 0,
@@ -42,26 +43,28 @@ class Cursor extends Phaser.GameObjects.Sprite {
   }
 
   destroyTooltip() {
+    if (this._tooltip) {
       this._tooltip.destroy();
       this._tooltip = undefined;
+    }
   }
 
   createTooltip(content) {
     if (!this._tooltip) {
       const tooltipBg = new Phaser.GameObjects.Graphics(this.scene);
-      const stroke = new Phaser.GameObjects.Graphics(this.scene);
+      const contentSpanX = 20;
+      const contentSpanY = 10;
 
       tooltipBg.fillStyle(0x000000a, 1);
-      tooltipBg.fillRoundedRect(0, 0, content.width + 16, content.height + 8, 5);
+      tooltipBg.fillRoundedRect(0, 0, content.width + contentSpanX, content.height + contentSpanY, 5);
 
-      tooltipBg.lineStyle(2, 0xfcba03, 100);
-      tooltipBg.strokeRoundedRect(0, 0, content.width + 16, content.height + 8, 5);
+      borderGenerator(tooltipBg, content.width, content.height, 20, 10);
 
       this._tooltip = new Phaser.GameObjects.Container(this.scene, 0, 0);
       this._tooltip.add(tooltipBg);
       this._tooltip.add(content);
-      content.x = 8;
-      content.y = 4;
+      content.x = contentSpanX / 2;
+      content.y = contentSpanY / 2;
       this.scene.add.existing(this._tooltip);
     }
 

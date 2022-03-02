@@ -7,6 +7,9 @@ const CreateSharedState = () => {
   const timeState = CreateTimeState();
 
   return {
+    getPlaceName() {
+      return 'City Name';
+    },
     ...playerState,
     ...timeState,
   }

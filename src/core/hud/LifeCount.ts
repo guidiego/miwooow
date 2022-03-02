@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import EnhancedScene from "../EnhancedScene";
 
-import { HeartIcon } from "../../objects/Icon";
+import { HeartIcon } from "../Icon";
 
 class LifeBar extends Phaser.GameObjects.Container {
   private hearts: Phaser.GameObjects.Sprite[] = [];

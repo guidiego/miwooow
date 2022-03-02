@@ -1,6 +1,5 @@
 import Phaser from "phaser";
-import Item from "../../objects/Item";
-import Passive from "../../objects/Passive";
+import Passive from "./Passive";
 import EnhancedScene from "../EnhancedScene";
 
 

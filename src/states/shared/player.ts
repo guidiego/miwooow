@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { HeartIcon } from "../../objects/Icon";
+import { HeartIcon } from "../../core/Icon";
 import Item from "../../objects/Item";
 
 const MeasurableLevels = ['hungry', 'thirst', 'tiredness'] as const;

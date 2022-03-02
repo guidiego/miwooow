@@ -1,6 +1,6 @@
 import Phaser from "phaser";
-import EnhancedScene from "../core/EnhancedScene";
-import Item from "./Item";
+import { borderGenerator } from "../../util/hud";
+import EnhancedScene from "../EnhancedScene";
 
 class Passive extends Phaser.GameObjects.Container {
   private _hash: string;
@@ -30,9 +30,12 @@ class Passive extends Phaser.GameObjects.Container {
 
   private createBadge() {
     const graph = new Phaser.GameObjects.Graphics(this.scene);
-    graph.fillStyle(0xA6A6A6, 1);
-    graph.fillRoundedRect(0, 0, this._counter.width + 50, this._counter.height + 10, 5);
+
+    graph.fillStyle(0x37250e, 1);
+    graph.fillRoundedRect(0, 0, this._counter.width + 40, this._counter.height + 10, 5);
     graph.setDepth(0);
+
+    borderGenerator(graph, this._counter.width + 40, this._counter.height + 10, 0, 0);
     this.add(graph);
   }
 
@@ -52,14 +55,14 @@ class Passive extends Phaser.GameObjects.Container {
 
   update() {
     const missing = this._endTime - this.scene.sharedState.time;
-    let sec = 0, min = 0;
+    let sec = missing, min = 0;
 
     if (missing >= 60000) {
       min = Math.floor(missing / 60000);
       sec = missing - (min * 60000);
-    } else {
-      sec = missing / 1000;
     }
+
+    sec = sec / 1000;
 
     this._counter.text = `${(min >= 10 ? '' : '0') + min.toFixed()}:${(sec >= 10 ? '' : '0') + sec.toFixed()}`
   }

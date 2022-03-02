@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import EnhancedScene from "../../core/EnhancedScene";
-import Cursor from "../Cursor";
+import Cursor from "../../core/Cursor";
 
 import * as InfoItem from "./info";
 
